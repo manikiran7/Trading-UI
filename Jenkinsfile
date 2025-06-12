@@ -30,6 +30,15 @@ pipeline {
             }
         }
 
+        stage('List Workspace Contents') {
+            steps {
+                sh '''
+                    echo "Listing workspace content after build..."
+                    ls -la
+                '''
+            }
+        }
+
         stage('Start with PM2') {
             steps {
                 sh '''
@@ -42,9 +51,11 @@ pipeline {
     }
 
     post {
-        always {
-            cleanWs()
-        }
+        // Commented out for debugging purpose
+        // always {
+        //     cleanWs()
+        // }
+
         failure {
             echo '❌ Build failed!'
         }
