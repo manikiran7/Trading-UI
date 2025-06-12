@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         NODE_OPTIONS = "--openssl-legacy-provider"
+        CI = "false"  // ✅ Add this line
     }
 
     stages {
@@ -18,7 +19,6 @@ pipeline {
                     echo "Cleaning up old files..."
                     rm -rf node_modules package-lock.json build .env
 
-                    echo "Disabling preflight check to fix eslint conflict..."
                     echo SKIP_PREFLIGHT_CHECK=true > .env
 
                     echo "Installing dependencies..."
@@ -26,15 +26,6 @@ pipeline {
 
                     echo "Running build..."
                     npm run build
-                '''
-            }
-        }
-
-        stage('List Workspace Contents') {
-            steps {
-                sh '''
-                    echo "Listing workspace content after build..."
-                    ls -la
                 '''
             }
         }
@@ -51,11 +42,9 @@ pipeline {
     }
 
     post {
-        // Commented out for debugging purpose
         // always {
         //     cleanWs()
         // }
-
         failure {
             echo '❌ Build failed!'
         }
